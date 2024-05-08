@@ -11,7 +11,7 @@ st.set_page_config(
 
 
 if "data" not in st.session_state:
-    df = pd.read_csv(".\datasets\dados_processados.csv", sep=";", encoding="ISO-8859-1", engine='python', index_col=0)
+    df = pd.read_csv("./datasets/dados_processados.csv", sep=";", encoding="ISO-8859-1", engine='python', index_col=0)
 
 uf = st.sidebar.selectbox('Escolha a UF:', ['Todos'] + sorted(df['UF'].unique()))
 
