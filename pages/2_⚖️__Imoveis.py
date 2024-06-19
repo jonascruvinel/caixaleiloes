@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
+from functions.lastUpdate import get_file_modification_date
+
 
 st.set_page_config(
     page_title='Listagem de imoveis caixa',
@@ -9,9 +11,11 @@ st.set_page_config(
     layout='wide'
 )
 
-
+file_path = "./datasets/dados_processados.csv"
+file_modification_date = get_file_modification_date(file_path)
+last_update_str = file_modification_date.strftime("%d/%m/%Y")
 if "data" not in st.session_state:
-    df = pd.read_csv(".\datasets\dados_processados.csv", sep=";", encoding="ISO-8859-1", engine='python', index_col=0)
+    df = pd.read_csv("./datasets/dados_processados.csv", sep=";", encoding="ISO-8859-1", engine='python', index_col=0)
 
 uf = st.sidebar.selectbox('Escolha a UF:', ['Todos'] + sorted(df['UF'].unique()))
 
@@ -37,34 +41,6 @@ else:
 
 tipo_venda = st.sidebar.selectbox('Escolha a modalidade de venda:', ['Todos'] + tipo_venda_filtrados)
 
-#if tipo_venda != "Todos":
-#    flg_fgts_filtrados = sorted(df[df['Mod_venda'] == tipo_venda]['flg_fgts'].unique())
-#else:
-#flg_fgts_filtrados = sorted(df['flg_fgts'].unique())
-      
-#flg_fgts = st.sidebar.selectbox('FGTS:', ['Todos'] + flg_fgts_filtrados)
-                                          
-#if flg_fgts != "Todos":
-#    flg_financiamento_filtrados = sorted(df[df['flg_fgts'] == flg_fgts]['flg_financiamento'].unique())
-#else:
-#    flg_financiamento_filtrados = sorted(df['flg_financiamento'].unique())
-    
-#flg_financiamento = st.sidebar.selectbox('Financiamento:', ['Todos'] + flg_financiamento_filtrados)
-
-#if flg_financiamento != "Todos":
-#    flg_parcelamento_filtrados = sorted(df[df['flg_financiamento'] == flg_financiamento]['flg_parcelamento'].unique())
-#else:
-#    flg_parcelamento_filtrados = sorted(df['flg_parcelamento'].unique())
-
-#flg_parcelamento = st.sidebar.selectbox('Parcelamento:', ['Todos'] + flg_parcelamento_filtrados)
-
-#if flg_parcelamento != "Todos":
-#    flg_consorcio_filtrados = sorted(df[df['flg_parcelamento'] == flg_parcelamento]['flg_consorcio'].unique())
-#else:
-#    flg_consorcio_filtrados = sorted(df['flg_consorcio'].unique())
-
-#flg_consorcio = st.sidebar.selectbox('Consorcio:', ['Todos'] + flg_consorcio_filtrados)
-
 if st.sidebar.button('Limpar filtros'):
     #st.rerun()
     #st.experimental_rerun
@@ -80,14 +56,6 @@ if bairro != "Todos":
     conditions.append(df['Bairro'] == bairro)
 if tipo_venda != "Todos":
     conditions.append(df['Modalidade de venda'] == tipo_venda)
-#if flg_fgts != "Todos":
-#    conditions.append(df['flg_fgts'] == flg_fgts)
-#if flg_financiamento != "Todos":
-#    conditions.append(df['flg_financiamento'] == flg_financiamento)
-#if flg_parcelamento != "Todos":
-#    conditions.append(df['flg_parcelamento'] == flg_parcelamento)
-#if flg_consorcio != "Todos":
-#    conditions.append(df['flg_consorcio'] == flg_consorcio)
 
 if conditions:
     combined_condition = conditions[0]
@@ -114,3 +82,5 @@ st.dataframe(
          "Link de acesso" : st.column_config.LinkColumn("Link")
      }
 )
+
+st.write(f'Listagem mensal ultima atualização: {last_update_str}')
